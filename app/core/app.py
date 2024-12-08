@@ -1,11 +1,11 @@
 from fastapi.exceptions import RequestValidationError
-from core.database import get_db
-from core.settings import settings
+from app.core.database import get_db
+from app.core.settings import settings
 from fastapi import FastAPI, HTTPException
 from sqlalchemy.exc import OperationalError
 from contextlib import asynccontextmanager
 from sqlalchemy.sql import text
-from core.exception_handlers import ValidationErrorResponse, validation_exception_handler
+from app.core.exception_handlers import ValidationErrorResponse, validation_exception_handler
 
 
 @asynccontextmanager

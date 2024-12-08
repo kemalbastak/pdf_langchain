@@ -1,5 +1,5 @@
 import uvicorn
-from core.app import app
+from app.core import app
 
 
 @app.get("/hello")
