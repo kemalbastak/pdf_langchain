@@ -23,7 +23,7 @@ COPY pyproject.toml .
 
 # Create virtual environment and install dependencies
 RUN uv venv && \
-    uv pip install --system --no-cache-dir .
+    uv pip install --system .
 
 # Copy the rest of the application code
 COPY . .
