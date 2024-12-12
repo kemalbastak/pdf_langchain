@@ -2,6 +2,8 @@ import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import MagicMock
 from apps.core.app import app  # Import the FastAPI app
+from apps.minio.minio_client import minio_client
+from apps.services.pdf import get_pdf_service
 
 
 # Mocking external dependencies
@@ -39,8 +41,8 @@ async def test_upload_file(client, mock_pdf_service, mock_minio_client):
         "file": ("test_file.pdf", b"test content", "application/pdf"),
     }
 
-    # Send a POST request to the /v1/pdf endpoint
-    response = client.post("/v1/pdf", files=test_file)
+    # Send a POST request to the /v1/pdf/ endpoint
+    response = client.post("/v1/pdf/", files=test_file)
 
     # Assert that the response status code is 200 (OK)
     assert response.status_code == 200
@@ -71,7 +73,7 @@ async def test_upload_file_error(client, mock_pdf_service, mock_minio_client):
     }
 
     # Send a POST request to the /v1/pdf endpoint
-    response = client.post("/v1/pdf", files=test_file)
+    response = client.post("/v1/pdf/", files=test_file)
 
     # Assert that the response status code is 500 (Internal Server Error)
     assert response.status_code == 500
