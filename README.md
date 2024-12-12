@@ -99,14 +99,24 @@ and monitoring. PDF files are stored in **MinIO** for object storage.
       'http://localhost:8000/pdf/' \
       -F 'file=@/path/to/your/file.pdf'
     ```
+  
+    Example response:
+  ```json
+    {"pdf_id": "unique_pdf_identifier"}
+    ```
 
-- **Get AI response**:
-  Send a `GET` request to `/pdf/{pdf_id}/` to retrieve the AI-generated response for a specific PDF.
+  - **Get AI response**:
+    Send a `GET` request to `/pdf/{pdf_id}/` to retrieve the AI-generated response for a specific PDF.
 
-  Example request:
+    Example request:
 
-    ```bash
-    curl -X 'GET' 'http://localhost:8000/pdf/pdf_id:UUID/'
+      ```bash
+      curl -X 'GET' 'http://localhost:8000/v1/chat/pdf_id:UUID/'
+      ```
+
+    Example response:
+      ```json
+    {"response": "The main topic of this PDF is..."}
     ```
 
 ## Logs

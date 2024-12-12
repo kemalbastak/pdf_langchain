@@ -8,7 +8,7 @@ from apps.es.elasticsearch_logger import logger
 
 pdf_router = APIRouter(prefix='/v1', tags=["PDF"])
 
-@pdf_router.post("/pdf")
+@pdf_router.post("/pdf/")
 async def upload_file(service: PDFService = Depends(get_pdf_service), file: FileUpload = File(...)):
     logger.info(f"Received file upload request for file: {file.file.filename}")
 

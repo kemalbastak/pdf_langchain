@@ -10,7 +10,7 @@ from apps.es.elasticsearch_logger import logger
 
 chat_router = APIRouter(prefix=settings.API_V1_STR, tags=["Chat"])
 
-@chat_router.post("/chat/{pdf_id}", response_model=GeminiResponse)
+@chat_router.post("/chat/{pdf_id}/", response_model=GeminiResponse)
 async def chat_pdf(pdf_id: UUID, message: ChatMessage, service: ChatService = Depends(get_chat_service)):
     logger.info(f"Received chat request for PDF with ID: {pdf_id} and user message: {message.message}")
 
