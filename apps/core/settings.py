@@ -54,9 +54,26 @@ class Settings(BaseSettings):
     MINIO_SECRET_KEY: str = os.getenv("MINIO_SECRET_KEY")
     MINIO_BUCKET_NAME: str = os.getenv("MINIO_BUCKET_NAME")
 
+    ELASTICSEARCH_USERNAME: str = os.getenv("ELASTICSEARCH_USERNAME")
+    ELASTICSEARCH_PASSWORD: str = os.getenv("ELASTICSEARCH_PASSWORD")
+    ELASTICSEARCH_HOST: str = os.getenv("ELASTICSEARCH_HOST")
+    ELASTICSEARCH_INDEX_NAME: str = os.getenv("ELASTICSEARCH_INDEX_NAME")
+    ELASTICSEARCH_PORT: int = os.getenv("ELASTICSEARCH_PORT")
+
     TIME_ZONE: str = "Europe/Istanbul"
 
     FILE_MAX_SIZE_MB: int = 20
+
+    LLM_MODEL: str = "gemini-1.5-flash"
+
+    SYSTEM_PROMPT: str = ("You are a helpful assistant. "
+                               "You will be given a content. "
+                               "Answer accordingly to the instructions. "
+                               "If you don't know the answer, just say that you don't know."
+                               "The content will be between <content></content> tag in the message."
+                          "Answer in the same language as the question."
+                               )
+
 
     class Config:
         case_sensitive = True

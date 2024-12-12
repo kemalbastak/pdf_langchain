@@ -15,15 +15,17 @@ RUN set -ex \
     && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv for dependency management
+# Install dependencies management tool (uv)
 RUN pip install uv
 
-# Copy pyproject.toml
+# Copy pyproject.toml and install dependencies using uv
 COPY pyproject.toml .
-
-# Create virtual environment and install dependencies
 RUN uv venv && \
     uv pip install --system .
+
+## Copy the init.sh script and make it executable
+COPY ./docker/fastapi/init.sh .
+RUN chmod +x ./init.sh
 
 # Copy the rest of the application code
 COPY . .
@@ -31,5 +33,6 @@ COPY . .
 # Expose the FastAPI port
 EXPOSE 8000
 
-# Start the FastAPI application with Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Set ENTRYPOINT to the init.sh script
+ENTRYPOINT ["/bin/bash", "./docker/fastapi/init.sh"]
+#CMD ["python", "main.py"]

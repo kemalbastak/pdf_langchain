@@ -11,46 +11,15 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
-      redis:
-        condition: service_healthy
       elasticsearch:
         condition: service_healthy
     volumes:
       - .:/app
+      - ./docker/fastapi/init.sh:/apps/init.sh
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       - MINIO_URL=http://minio:9000
-      - REDIS_URL=redis://redis:6379/0
       - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
-
-  celery:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: celery_worker
-    command: celery -A apps.celery.worker.celery_app worker --loglevel=info
-    depends_on:
-      redis:
-        condition: service_healthy
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      - MINIO_URL=http://minio:9000
-      - REDIS_URL=redis://redis:6379/0
-      - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
-    volumes:
-      - .:/app
-  flower:
-    image: mher/flower
-    container_name: flower_monitor
-    command: celery --broker=${REDIS_URL} flower --port=5555
-    ports:
-      - "5555:5555"
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-    depends_on:
-      redis:
-        condition: service_healthy
 
   postgres:
     image: ankane/pgvector
@@ -105,20 +74,7 @@ services:
     volumes:
       - minio_data:/data
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-
-  redis:
-    image: redis:alpine
-    container_name: redis_server
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -150,7 +106,7 @@ services:
     container_name: kibana_server
     environment:
       - ELASTICSEARCH_URL=${ELASTICSEARCH_URL}
-      - ELASTICSEARCH_HOSTS="http://elasticsearch:9200"
+      - ELASTICSEARCH_HOSTS=${ELASTICSEARCH_URL}
       - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
     ports:
@@ -163,5 +119,4 @@ volumes:
   postgres_data:
   pgadmin_data:
   minio_data:
-  redis_data:
   elasticsearch_data:
